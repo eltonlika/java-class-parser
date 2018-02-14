@@ -1,33 +1,37 @@
 {
-  "name": "java-class-parser",
-  "version": "0.2.1",
-  "description": "java-class-parser",
-  "main": "index.js",
-  "bin": {
-    "jjs-parser": "./bin/jjs-parser.js"
-  },
-  "scripts": {
-    "test": "./node_modules/.bin/mocha -R spec test"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/villadora/java-class-parser.git"
-  },
-  "keywords": [
-    "java",
-    "class",
-    "parser"
-  ],
-  "engines": {
-    "node": ">=0.10.0"
-  },
-  "author": "villadora",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/villadora/java-class-parser/issues"
-  },
-  "devDependencies": {
-    "chai": "^1.10.0",
-    "mocha": "^2.0.1"
-  }
+    "name": "java-class-parser",
+    "version": "0.2.1",
+    "description": "java-class-parser",
+    "main": "index.js",
+    "bin": {
+        "jjs-parser": "./bin/jjs-parser.js"
+    },
+    "scripts": {
+        "test": "./node_modules/.bin/mocha -R spec test"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/villadora/java-class-parser.git"
+    },
+    "keywords": [
+        "java",
+        "class",
+        "parser"
+    ],
+    "engines": {
+        "node": ">=0.10.0"
+    },
+    "author": "villadora",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/villadora/java-class-parser/issues"
+    },
+    "devDependencies": {
+        "chai": "^1.10.0",
+        "mocha": "^2.0.1"
+    },
+    "dependencies": {
+        "minimist": "^1.2.0",
+        "node-stream-zip": "^1.4.2"
+    }
 }
