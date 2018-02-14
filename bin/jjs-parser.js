@@ -1,13 +1,14 @@
 #!/usr/bin/env node
 
+"use strict"
+
+var walker = require('./walker');
 var parser = require('../');
-var args = process.argv.slice(2);
-var argv = require('minimist')(args);
-console.log(argv);
-var files = argv._;
+var argv = require('minimist')(process.argv.slice(2));
+var paths = argv._;
 var printer = (argv['j'] || argv['json']) ? jsonPrinter : simplePrinter;
 
-parser(files, printer);
+walker(paths).then(result => parser(result, printer));
 
 function simplePrinter(err, rs) {
     if (err)

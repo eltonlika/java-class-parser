@@ -1,58 +1,39 @@
-var spawn = require('child_process').spawn;
-var cmd = 'javap';
+const spawn = require('child_process').spawn;
+const cmd = 'javap';
 
-module.exports = function(files, options, cb) {
-    files = files || [];
-    if (typeof options == 'function') {
-        cb = options;
-        options = undefined;
-    }
-
-    options = options || {};
-
-    if (options.args && (typeof options.outputParser != 'function')) {
-        throw new Error('Please provide custom parser for ouput when providing new arguments');
-    }
-
-    var parse = options.outputParser || outputParser;
-
-    files = files.filter(function(file) {
-        return /\.class$/.test(file);
-    });
-
-    var output = '';
-    var error = '';
-    var child = spawn(cmd, (options.args ? options.args : ['-public']).concat(files));
-
-    child.stdout.on('data', function(data) {
-        output += '' + data;
-    });
-
-    child.stderr.on('data', function(data) {
-        error += '' + data;
-    });
-
-    child.on('close', function(code) {
-        if (code !== 0) {
-            var err = new Error(error);
-            err.code = code;
-            return cb(err);
+module.exports = function(classFilesByJar, cb) {
+    Object.keys(classFilesByJar).forEach(jar => {
+        const javapArgs = ['-private'];
+        if (jar) {
+            javapArgs.push('-classpath');
+            javapArgs.push(jar);
         }
 
-        // success
-        cb(null, parse(output));
-    });
+        const classFiles = jar ? classFilesByJar[jar].map(classFileToName) : classFilesByJar[jar];
+        const child = spawn(cmd, javapArgs.concat(classFiles));
 
+        var output = '';
+        var error = '';
+
+        child.stdout.on('data', data => output += '' + data);
+        child.stderr.on('data', data => error += '' + data);
+        child.on('close', code => {
+            if (code !== 0) {
+                const err = new Error(error);
+                err.code = code;
+                return cb(err);
+            }
+            // success
+            cb(null, outputParser(output));
+        });
+    });
 };
 
-
 var typeRegex = '[a-zA-Z0-9\\.<>\\?\\$\\[\\]]+';
-
 
 var classRegex = new RegExp('(?:(public|private|protected) )?((?:(?:static|abstract|final) ?)*)(class|interface) (' + typeRegex + ') (?:extends ((?:' + typeRegex + '),?)+ )?(?:implements ((?:[a-zA-Z0-9\\.<>\\?\\$])+,?)+ )?{([^}]+)}', 'gm');
 //                             access modifier              return value             name
 var methodRegex = new RegExp('(?:(public|private|protected) )?((?:static|abstract|final) ?)*(?:(' + typeRegex + ') )?([a-zA-Z]+)\\(([^\\)]*)\\)');
-
 
 var fieldRegex = new RegExp('(?:(public|private|protected) )?((?:(?:static|abstract|final) ?)*)(' + typeRegex + ') ([a-zA-Z0-9]+)');
 
@@ -135,8 +116,12 @@ function outputParser(output) {
     return rs;
 }
 
-
-
 function trimStr(str) {
     return str.trim();
+}
+
+function classFileToName(classFile) {
+    return classFile
+        .replace(/\.class/g, "")
+        .replace(/\//g, ".");
 }
