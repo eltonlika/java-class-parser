@@ -2,7 +2,7 @@
 
 var path = require('path');
 var assert = require('chai').assert;
-var parser = require('../');
+var parser = require('../bin/parser');
 var walker = require('../bin/walker');
 
 describe('test', function() {

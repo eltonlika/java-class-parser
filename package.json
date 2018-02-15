@@ -2,16 +2,17 @@
     "name": "java-class-parser",
     "version": "0.2.1",
     "description": "java-class-parser",
-    "main": "index.js",
+    "main": "./bin/jjs-parser.js",
     "bin": {
         "jjs-parser": "./bin/jjs-parser.js"
     },
     "scripts": {
-        "test": "./node_modules/.bin/mocha --harmony -R spec test"
+        "test": "./node_modules/.bin/mocha --harmony -R spec test",
+        "build": "npx babel ./src -d ./bin"
     },
     "repository": {
         "type": "git",
-        "url": "git://github.com/villadora/java-class-parser.git"
+        "url": "git://github.com/eltonlika/java-class-parser.git"
     },
     "keywords": [
         "java",
@@ -21,16 +22,23 @@
     "engines": {
         "node": ">=0.10.0"
     },
-    "author": "villadora",
+    "author": "eltonlika",
     "license": "MIT",
     "bugs": {
-        "url": "https://github.com/villadora/java-class-parser/issues"
+        "url": "https://github.com/eltonlika/java-class-parser/issues"
     },
     "devDependencies": {
+        "@babel/cli": "^7.0.0-beta.40",
+        "@babel/core": "^7.0.0-beta.40",
+        "@babel/plugin-proposal-async-generator-functions": "^7.0.0-beta.40",
+        "@babel/plugin-transform-runtime": "^7.0.0-beta.40",
+        "@babel/polyfill": "^7.0.0-beta.40",
+        "@babel/preset-env": "^7.0.0-beta.40",
         "chai": "^1.10.0",
         "mocha": "^2.0.1"
     },
     "dependencies": {
+        "@babel/runtime": "^7.0.0-beta.40",
         "minimist": "^1.2.0",
         "node-stream-zip": "^1.4.2"
     }

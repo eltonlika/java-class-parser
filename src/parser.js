@@ -1,6 +1,14 @@
+"use strict"
+
 const spawn = require('child_process').spawn;
 const cmd = 'javap';
 const accessModifier = '-private';
+
+const typeRegex = '[a-zA-Z0-9\\.<>\\?\\$\\[\\]]+';
+const classRegex = new RegExp('(?:(public|private|protected) )?((?:(?:static|abstract|final) ?)*)(class|interface) (' + typeRegex + ') (?:extends ((?:' + typeRegex + '),?)+ )?(?:implements ((?:[a-zA-Z0-9\\.<>\\?\\$ ])+,?)+ )?{([^}]+)}', 'gm');
+const methodRegex = new RegExp('(?:(public|private|protected) )?((?:static|abstract|final) ?)*(?:(' + typeRegex + ') )?([a-zA-Z]+)\\(([^\\)]*)\\)');
+const fieldRegex = new RegExp('(?:(public|private|protected) )?((?:(?:static|abstract|final) ?)*)(' + typeRegex + ') ([a-zA-Z0-9]+)');
+const splitOutputRegex = new RegExp('Compiled from \"' + typeRegex + '\.java\"', 'gm');
 
 module.exports = function(classFilesByJar, cb) {
     Object.keys(classFilesByJar).forEach(jar => {
@@ -16,22 +24,19 @@ module.exports = function(classFilesByJar, cb) {
                 err.code = code;
                 return cb(err);
             }
-            // success
-            cb(null, outputParser(output));
+            for (const part of output.split(splitOutputRegex)) {
+                // console.log('-------- START --------');
+                // console.log(part);
+                cb(null, outputParser(part));
+                // console.log('-------- END --------');
+            }
+
         });
     });
 };
 
-var typeRegex = '[a-zA-Z0-9\\.<>\\?\\$\\[\\]]+';
-
-var classRegex = new RegExp('(?:(public|private|protected) )?((?:(?:static|abstract|final) ?)*)(class|interface) (' + typeRegex + ') (?:extends ((?:' + typeRegex + '),?)+ )?(?:implements ((?:[a-zA-Z0-9\\.<>\\?\\$])+,?)+ )?{([^}]+)}', 'gm');
-//                             access modifier              return value             name
-var methodRegex = new RegExp('(?:(public|private|protected) )?((?:static|abstract|final) ?)*(?:(' + typeRegex + ') )?([a-zA-Z]+)\\(([^\\)]*)\\)');
-
-var fieldRegex = new RegExp('(?:(public|private|protected) )?((?:(?:static|abstract|final) ?)*)(' + typeRegex + ') ([a-zA-Z0-9]+)');
-
 function outputParser(output) {
-    var rs = {};
+    const rs = {};
     var or = classRegex.exec(output);
 
     while (or) {
@@ -70,7 +75,6 @@ function outputParser(output) {
                         describe: describe
                     });
                 }
-
                 return;
             }
 
@@ -103,7 +107,9 @@ function outputParser(output) {
 
         rs[className] = clz;
 
+        //console.log("START REGEX: last class " + className);
         or = classRegex.exec(output);
+        //console.log("END REGEX");
     }
 
     return rs;

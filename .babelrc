@@ -1,0 +1,19 @@
+{
+    "presets": [
+        ["@babel/preset-env", {
+            "targets": {
+                "node": "0.10.0"
+            },
+            "forceAllTransforms": true
+        }]
+    ],
+    "plugins": [
+        ["@babel/plugin-proposal-async-generator-functions"],
+        ["@babel/transform-runtime", {
+            "helpers": true,
+            "polyfill": true,
+            "regenerator": true,
+            "moduleName": "@babel/runtime"
+        }]
+    ]
+}
