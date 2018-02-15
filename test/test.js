@@ -134,4 +134,5 @@ describe('test', function() {
 
         walker([path.join(__dirname, './fixtures/EnumTest.class')]).then(result => parser(result, test));
     });
+
 });
