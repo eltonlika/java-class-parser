@@ -7,7 +7,7 @@
         "jjs-parser": "./bin/jjs-parser.js"
     },
     "scripts": {
-        "test": "./node_modules/.bin/mocha -R spec test"
+        "test": "./node_modules/.bin/mocha --harmony -R spec test"
     },
     "repository": {
         "type": "git",

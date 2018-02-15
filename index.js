@@ -1,16 +1,16 @@
 const spawn = require('child_process').spawn;
 const cmd = 'javap';
+const protectionModifier = '-private';
 
 module.exports = function(classFilesByJar, cb) {
     Object.keys(classFilesByJar).forEach(jar => {
-        const javapArgs = ['-private'];
-        if (jar) {
-            javapArgs.push('-classpath');
-            javapArgs.push(jar);
-        }
+        var javapArgs;
+        if (jar == undefined || jar === 'undefined')
+            javapArgs = [protectionModifier].concat(classFilesByJar[jar]);
+        else
+            javapArgs = [protectionModifier, '-classpath', jar].concat(classFilesByJar[jar].map(classFileToName));
 
-        const classFiles = jar ? classFilesByJar[jar].map(classFileToName) : classFilesByJar[jar];
-        const child = spawn(cmd, javapArgs.concat(classFiles));
+        const child = spawn(cmd, javapArgs);
 
         var output = '';
         var error = '';
