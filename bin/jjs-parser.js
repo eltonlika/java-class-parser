@@ -39,5 +39,6 @@ function jsonPrinter(err, rs) {
     if (err)
         return console.error(err.message);
 
-    console.log(JSON.stringify(rs, null, 2));
+    for (var clzName in rs)
+        console.log(JSON.stringify(rs[clzName], null, 2));
 }

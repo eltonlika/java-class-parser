@@ -63,7 +63,7 @@ module.exports = async function(args) {
     const classFilesByJar = {};
 
     for await (const file of walkClassFiles(walkPaths(paths))) {
-        const jarFile = file.jarFile;
+        const jarFile = file.jarFile || '';
         const classFile = file.classFile;
 
         if (!classFilesByJar[jarFile])
